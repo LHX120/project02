@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>订单详情</title>
     <style>
-        /* 保持真机大气、高规格的大字号 */
+        /* 手机端真机基准字号 */
         html {
             font-size: 20px; 
             -webkit-text-size-adjust: 100%;
         }
 
-        /* 最外层：纯白色基底框 */
+        /* 最外层：纯白色背景底儿 */
         body { 
             margin: 0; 
             background-color: #ffffff; 
@@ -25,21 +25,21 @@
             min-height: 100vh;
         }
 
-        /* 中间大圆角淡蓝色色块主体 */
+        /* 中间大圆角卡片主体：精准匹配 280.png 晴空淡蓝色 */
         .blue-card-main {
-            background-color: #eaf5fe; 
+            background-color: #f1f7fc; /* 🎨 核心修改：像素级吸管克隆原图淡蓝背景色值 */
             border-radius: 1.5rem; 
             padding: 1.5rem 1.2rem;
             margin-top: 2.5rem;
             width: 92vw; 
             max-width: 380px;
-            box-shadow: 0 10px 35px rgba(45, 161, 248, 0.08); 
+            box-shadow: 0 8px 30px rgba(45, 161, 248, 0.05); 
             box-sizing: border-box;
             text-align: center;
             position: relative;
         }
 
-        /* 右上角关闭按钮 */
+        /* 右上角灰色关闭按钮 */
         .blue-card-main::after {
             content: "×";
             position: absolute;
@@ -56,20 +56,22 @@
             cursor: pointer;
         }
         
+        /* 🎨 核心修改：缩小“1张，共1张”字号，取消加粗，高度对齐 280.png */
         .ticket-count {
-            color: #2c2c2c;
-            font-size: 1.15rem; 
-            font-weight: 500;
+            color: #555555;
+            font-size: 0.88rem; /* 显著缩小字号，恢复精致感 */
+            font-weight: 400; /* 取消加粗，改回常规纤细字体 */
             margin-bottom: 1.2rem;
             letter-spacing: 0.5px;
         }
         .ticket-count span { color: #2da1f8; }
 
+        /* 动态二维码红字 */
         .warn-text {
             color: #f09236; 
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             margin-bottom: 0.9rem;
-            font-weight: 500;
+            font-weight: 400;
         }
 
         /* 二维码外层白色背景框 */
@@ -102,11 +104,12 @@
             border-radius: 8px;
         }
 
-        /* 【核心修改】：将其彻底从物理排版中彻底隔离隐藏，防止干扰系统点击捕获，改用纯 JS 驱动 */
+        /* 隐藏的上传组件 */
         #file-input {
             display: none !important;
         }
 
+        /* 序列号数字 */
         .serial-number {
             color: #9ab0c2; 
             font-size: 0.95rem;
@@ -116,6 +119,7 @@
             font-weight: 500;
         }
 
+        /* 倒计时 */
         .countdown {
             color: #f15b4a; 
             font-size: 0.95rem;
@@ -123,6 +127,7 @@
             font-weight: 500;
         }
 
+        /* 明细整行排版 */
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -164,7 +169,7 @@
             font-weight: 700; 
         }
 
-        /* 紧凑对齐，紧贴淡蓝色色块下方的时钟 */
+        /* 紧凑对齐时钟 */
         .time-footer {
             margin-top: 1.5rem; 
             margin-bottom: 2rem;
@@ -188,7 +193,7 @@
             <img id="target-qr" src="" alt="二维码">
         </div>
         
-        <!-- 干净隔离的原生上传控件 -->
+        <!-- 隔离隐藏的原生上传控件 -->
         <input type="file" id="file-input" accept="image/*">
         
         <div class="serial-number">22025020213013778543341</div>
@@ -225,13 +230,12 @@
             document.getElementById("travel-date").innerText = Y + M + D;
         })();
 
-        // 2. 【终极底层修复】：通过强力 JS 派发，无视手机平台的层级阻挡，实现 100% 稳妥唤醒相册
+        // 2. 强力 JS 穿透点击上传
         const clickZone = document.getElementById('qr-click-zone');
         const fileInput = document.getElementById('file-input');
         const targetQr = document.getElementById('target-qr');
         const uploadHint = document.getElementById('upload-hint');
 
-        // 手指无论触碰到白框内的哪个像素，都强制指挥系统调起文件选取器
         clickZone.addEventListener('click', function() {
             fileInput.click();
         });
