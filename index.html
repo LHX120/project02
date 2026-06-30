@@ -2,16 +2,16 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 针对移动端物理视口的精准锁定 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>订单详情</title>
     <style>
+        /* 保持真机大气、高规格的大字号 */
         html {
-            font-size: 16px;
+            font-size: 20px; 
             -webkit-text-size-adjust: 100%;
         }
 
-        /* 1. 最外层：保持完美的纯白色底儿 */
+        /* 最外层：纯白色基底框 */
         body { 
             margin: 0; 
             background-color: #ffffff; 
@@ -25,53 +25,51 @@
             min-height: 100vh;
         }
 
-        /* 2. 中间大圆角淡蓝色色块主体 */
+        /* 中间大圆角淡蓝色色块主体 */
         .blue-card-main {
             background-color: #eaf5fe; 
-            border-radius: 28px; 
-            padding: 24px 20px 24px 20px;
-            margin-top: 50px;
-            width: 90vw;
-            max-width: 350px;
+            border-radius: 1.5rem; 
+            padding: 1.5rem 1.2rem;
+            margin-top: 2.5rem;
+            width: 92vw; 
+            max-width: 380px;
+            box-shadow: 0 10px 35px rgba(45, 161, 248, 0.08); 
             box-sizing: border-box;
             text-align: center;
             position: relative;
-            box-shadow: 0 8px 30px rgba(45, 161, 248, 0.08); 
         }
 
-        /* 右上角灰色关闭按钮 */
+        /* 右上角关闭按钮 */
         .blue-card-main::after {
             content: "×";
             position: absolute;
-            top: -42px;
+            top: -2rem;
             right: 0px;
-            width: 22px;
-            height: 22px;
+            width: 1.2rem;
+            height: 1.2rem;
             background-color: rgba(0, 0, 0, 0.2);
             color: #fff;
             border-radius: 50%;
-            font-size: 16px;
-            line-height: 20px;
+            font-size: 0.9rem;
+            line-height: 1.1rem;
             text-align: center;
             cursor: pointer;
         }
         
-        /* 数量文字 */
         .ticket-count {
-            color: #333333;
-            font-size: 1.1rem;
+            color: #2c2c2c;
+            font-size: 1.15rem; 
             font-weight: 500;
-            margin-bottom: 24px;
+            margin-bottom: 1.2rem;
             letter-spacing: 0.5px;
         }
         .ticket-count span { color: #2da1f8; }
 
-        /* 动态二维码文字 */
         .warn-text {
             color: #f09236; 
-            font-size: 0.85rem;
-            margin-bottom: 16px;
-            font-weight: 400;
+            font-size: 0.88rem;
+            margin-bottom: 0.9rem;
+            font-weight: 500;
         }
 
         /* 二维码外层白色背景框 */
@@ -79,20 +77,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 16px auto;
-            width: 172px;
-            height: 172px;
+            margin: 0 auto 0.9rem auto;
+            width: 190px; 
+            height: 190px;
             cursor: pointer;
             background-color: #ffffff; 
-            border-radius: 8px;
-            border: 1px dashed #2da1f8; 
+            border-radius: 10px;
+            border: 2px dashed #2da1f8; 
             box-sizing: border-box;
             color: #2da1f8;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: bold;
+            position: relative;
         }
 
-        /* 上传后的图片自动裁剪 */
+        /* 上传后的图片自动高精裁剪 */
         .qr-container img {
             width: 100% !important;
             height: 100% !important;
@@ -100,50 +99,51 @@
             object-position: center; 
             image-rendering: -webkit-optimize-contrast;
             display: none; 
+            border-radius: 8px;
         }
 
-        /* 隐藏原生上传表单 */
+        /* 【核心修改】：将其彻底从物理排版中彻底隔离隐藏，防止干扰系统点击捕获，改用纯 JS 驱动 */
         #file-input {
             display: none !important;
         }
 
-        /* 序列号 */
         .serial-number {
-            color: #a4b4c4; 
+            color: #9ab0c2; 
             font-size: 0.95rem;
             font-family: "Helvetica Neue", Arial, sans-serif;
-            margin-bottom: 14px;
+            margin-bottom: 0.8rem;
             letter-spacing: 0.3px;
+            font-weight: 500;
         }
 
-        /* 倒计时 */
         .countdown {
             color: #f15b4a; 
-            font-size: 0.9rem;
-            margin-bottom: 24px;
-            font-weight: 400;
+            font-size: 0.95rem;
+            margin-bottom: 1.4rem;
+            font-weight: 500;
         }
 
-        /* 明细条目 */
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 18px;
-            font-size: 0.9rem;
+            margin-bottom: 1.1rem;
+            font-size: 0.95rem; 
             line-height: 1.5;
             text-align: left;
         }
         .info-label {
-            color: #333333;
-            width: 72px;
+            color: #2c2c2c;
+            width: 4.5rem;
             flex-shrink: 0;
+            font-weight: 500;
         }
         .info-value {
             color: #8fa0b0; 
             flex-grow: 1;
             text-align: right;
-            padding-left: 20px;
+            padding-left: 1rem;
+            font-weight: 500;
         }
         .info-value.blue-text {
             color: #7b8b9a; 
@@ -151,57 +151,49 @@
             text-align-last: right; 
         }
 
-        /* 5. 【像素级修正】：强化手机端的温馨提示整体加粗与色调深度 */
+        /* 温馨提示框 */
         .tip-box {
             background-color: #fff6ed; 
             border-radius: 8px;
-            padding: 14px;
+            padding: 0.8rem;
             text-align: justify;
-            margin-top: 24px;
-            
-            /* 核心微调 */
+            margin-top: 1.4rem;
             font-size: 0.88rem; 
             line-height: 1.6;
-            color: #e67e22; /* 调校：改成比之前更饱满、偏红的深橙色，完美对齐原图 */
-            font-weight: 600; /* 核心：对提示框内部【全部文字】强制进行真机高规格加粗 */
-        }
-        /* 确保前缀和后面的字粗细完全一致 */
-        .tip-box strong {
-            font-weight: 600;
+            color: #e67e22; 
+            font-weight: 700; 
         }
 
-        /* 最底部防伪时钟 */
+        /* 紧凑对齐，紧贴淡蓝色色块下方的时钟 */
         .time-footer {
-            margin-top: auto;
-            margin-bottom: 30px;
-            padding-top: 40px;
+            margin-top: 1.5rem; 
+            margin-bottom: 2rem;
             color: #b2b2b2;
-            font-size: 0.88rem;
+            font-size: 0.95rem;
             letter-spacing: 0.2px;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-    <!-- 整个大淡蓝色大卡片区域 -->
     <div class="blue-card-main">
         
         <div class="ticket-count"><span>1</span> 张，共 1 张</div>
         <div class="warn-text">动态二维码，请勿截图使用</div>
         
-        <!-- 点击此区域立即在电脑/手机端上传图片 -->
+        <!-- 二维码点击区 -->
         <div class="qr-container" id="qr-click-zone">
-            <span id="upload-hint">点击此处上传二维码</span>
+            <span id="upload-hint" style="padding: 10px; text-align: center;">点击此处<br>上传二维码</span>
             <img id="target-qr" src="" alt="二维码">
         </div>
         
-        <!-- 隐形表单上传 -->
+        <!-- 干净隔离的原生上传控件 -->
         <input type="file" id="file-input" accept="image/*">
         
         <div class="serial-number">22025020213013778543341</div>
         <div class="countdown" id="countdown-text">将在 10 秒后刷新</div>
 
-        <!-- 所有明细直接平铺在淡蓝底色上 -->
         <div class="info-row">
             <div class="info-label">产品名称</div>
             <div class="info-value blue-text">环全洲游览线（可直达毛泽东青年艺术雕塑站，含往返）</div>
@@ -215,18 +207,16 @@
             <div class="info-value">部分检票</div>
         </div>
 
-        <!-- 经过加粗和颜色加深调校的提示框 -->
         <div class="tip-box">
             <strong>温馨提示：</strong>可在毛泽东青年艺术雕塑站验票处或景区游客中心免费领取明信片一张。
         </div>
         
     </div>
     
-    <!-- 最底部防伪时钟 -->
     <div class="time-footer" id="display-time">2026-06-30 13:32:30</div>
 
     <script>
-        // 1. 强制即时加载当前的真实年月日出游日期
+        // 1. 注入今天的出游日期
         (function() {
             var date = new Date();
             var Y = date.getFullYear() + '-';
@@ -235,23 +225,24 @@
             document.getElementById("travel-date").innerText = Y + M + D;
         })();
 
-        // 2. 无缝一键上传与自动等比高精裁剪逻辑
+        // 2. 【终极底层修复】：通过强力 JS 派发，无视手机平台的层级阻挡，实现 100% 稳妥唤醒相册
         const clickZone = document.getElementById('qr-click-zone');
         const fileInput = document.getElementById('file-input');
         const targetQr = document.getElementById('target-qr');
         const uploadHint = document.getElementById('upload-hint');
 
+        // 手指无论触碰到白框内的哪个像素，都强制指挥系统调起文件选取器
         clickZone.addEventListener('click', function() {
             fileInput.click();
         });
 
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files;
-            if (file) {
-                targetQr.src = URL.createObjectURL(file);
+            if (file && file[0]) {
+                targetQr.src = URL.createObjectURL(file[0]);
                 targetQr.style.display = "block"; 
-                uploadHint.style.display = "none"; 
-                clickZone.style.border = "none";  
+                uploadHint.style.display = "none";  
+                clickZone.style.border = "none";   
             }
         });
 
