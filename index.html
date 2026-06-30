@@ -26,17 +26,21 @@
         }
 
         /* 中间大圆角卡片主体：精准匹配 280.png 晴空淡蓝色 */
-        .blue-card-main {
-            background-color: #dcedfa; /* 🎨 核心修改：像素级吸管克隆原图淡蓝背景色值 */
-            border-radius: 1.5rem; 
-            padding: 1.5rem 1.2rem;
-            margin-top: 2.5rem;
-            width: 92vw; 
-            max-width: 380px;
-            box-shadow: 0 8px 30px rgba(45, 161, 248, 0.05); 
-            box-sizing: border-box;
-            text-align: center;
-            position: relative;
+       /* 修改后的卡片主体：整体缩小一圈 */
+      .blue-card-main {
+          background-color: #dcedfa; 
+          border-radius: 1.5rem; 
+          padding: 1.5rem 1.2rem;
+          margin-top: 2.5rem;
+    
+         /* 核心修改：将宽度从 92vw 缩小到 86vw，最大宽度限制从 380px 缩小到 335px */
+         width: 86vw; 
+          max-width: 335px;
+    
+         box-shadow: 0 8px 30px rgba(45, 161, 248, 0.05); 
+       box-sizing: border-box;
+       text-align: center;
+       position: relative;
         }
 
         /* 右上角灰色关闭按钮 */
