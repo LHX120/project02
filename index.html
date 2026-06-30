@@ -4,191 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>订单详情</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
-        /* 手机端真机基准字号 */
-        html {
-            font-size: 20px; 
-            -webkit-text-size-adjust: 100%;
-        }
-
-        /* 最外层：纯白色背景底儿 */
+        html { font-size: 20px; -webkit-text-size-adjust: 100%; }
         body { 
-            margin: 0; 
-            background-color: #ffffff; 
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", sans-serif; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
-        }
-
-        /* 中间大圆角卡片主体 */
-        .blue-card-main {
-            background-color: #dcedfa; 
-            border-radius: 1.5rem; 
-            padding: 1.5rem 1.2rem;
-            margin-top: 0.5rem; /* 减小间距，配合上方文字下移 */
-            width: 86vw; 
-            max-width: 335px;
-            box-shadow: 0 8px 30px rgba(45, 161, 248, 0.05); 
-            box-sizing: border-box;
-            text-align: center;
-            position: relative;
-        }
-
-        /* 右上角灰色关闭按钮 */
-        .blue-card-main::after {
-            content: "×";
-            position: absolute;
-            top: -2rem;
-            right: 0px;
-            width: 1.2rem;
-            height: 1.2rem;
-            background-color: rgba(0, 0, 0, 0.2);
-            color: #fff;
-            border-radius: 50%;
-            font-size: 0.9rem;
-            line-height: 1.1rem;
-            text-align: center;
-            cursor: pointer;
+            margin: 0; background-color: #ffffff; 
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; 
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
         
-        /* 调整位置：向下移动，紧贴卡片上边缘 */
-        .ticket-count {
-            color: #555555;
-            font-size: 0.88rem; 
-            font-weight: 400; 
-            margin-top: 3.5rem; /* 增加顶部间距，实现整体下移 */
-            margin-bottom: 0px; /* 清空底部，紧贴下方卡片 */
-            letter-spacing: 0.5px;
+        /* 外部头部区域（严格移出蓝色块） */
+        .header-top-zone {
+            width: 92vw; max-width: 380px; margin-top: 2rem; position: relative; text-align: center;
         }
+        .ticket-count { color: #2c2c2c; font-size: 1.15rem; font-weight: 500; letter-spacing: 0.5px; }
         .ticket-count span { color: #2da1f8; }
-
-        /* 动态二维码红字 */
-        .warn-text {
-            color: #f09236; 
-            font-size: 0.85rem;
-            margin-bottom: 0.9rem;
-            font-weight: 400;
+        .close-btn {
+            position: absolute; right: 0px; top: 0px; width: 1.2rem; height: 1.2rem;
+            background-color: rgba(0, 0, 0, 0.2); color: #fff; border-radius: 50%; 
+            font-size: 0.9rem; line-height: 1.1rem; text-align: center; cursor: pointer;
         }
 
+        /* 中间大圆角淡蓝色色块主体 */
+        .blue-card-main {
+            background-color: #eaf5fe; border-radius: 1.5rem; padding: 1.5rem 1.2rem;
+            margin-top: 0.8rem; width: 92vw; max-width: 380px;
+            box-shadow: 0 10px 35px rgba(45, 161, 248, 0.08); box-sizing: border-box; text-align: center;
+        }
+        .warn-text { color: #f09236; font-size: 0.88rem; margin-bottom: 0.9rem; font-weight: 500; }
+        
         /* 二维码外层白色背景框 */
         .qr-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 0.9rem auto;
-            width: 190px; 
-            height: 190px;
-            cursor: pointer;
-            background-color: #ffffff; 
-            border-radius: 10px;
-            border: 2px dashed #2da1f8; 
-            box-sizing: border-box;
-            color: #2da1f8;
-            font-size: 0.85rem;
-            font-weight: bold;
-            position: relative;
+            display: flex; justify-content: center; align-items: center; margin: 0 auto 0.9rem auto;
+            width: 190px; height: 190px; cursor: pointer; background-color: #ffffff; 
+            border-radius: 12px; box-sizing: border-box; overflow: hidden; position: relative;
         }
-
-        /* 上传后的图片自动高精裁剪 */
         .qr-container img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover; 
-            object-position: center; 
-            image-rendering: -webkit-optimize-contrast;
-            display: none; 
-            border-radius: 8px;
+            width: 100% !important; height: 100% !important; object-fit: fill;
+            image-rendering: -webkit-optimize-contrast; display: none;
         }
-
-        /* 隐藏的上传组件 */
-        #file-input {
-            display: none !important;
-        }
-
-        /* 序列号数字 */
-        .serial-number {
-            color: #9ab0c2; 
-            font-size: 0.95rem;
-            font-family: "Helvetica Neue", Arial, sans-serif;
-            margin-bottom: 0.8rem;
-            letter-spacing: 0.3px;
-            font-weight: 500;
-        }
-
-        /* 倒计时 */
-        .countdown {
-            color: #f15b4a; 
-            font-size: 0.95rem;
-            margin-bottom: 1.4rem;
-            font-weight: 500;
-        }
-
-        /* 明细整行排版 */
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.1rem;
-            font-size: 0.95rem; 
-            line-height: 1.5;
-            text-align: left;
-        }
-        .info-label {
-            color: #2c2c2c;
-            width: 4.5rem;
-            flex-shrink: 0;
-            font-weight: 500;
-        }
-        .info-value {
-            color: #8fa0b0; 
-            flex-grow: 1;
-            text-align: right;
-            padding-left: 1rem;
-            font-weight: 500;
-        }
-        .info-value.blue-text {
-            color: #7b8b9a; 
-            text-align: justify; 
-            text-align-last: right; 
-        }
-
-        /* 温馨提示框 */
-        .tip-box {
-            background-color: #fff6ed; 
-            border-radius: 8px;
-            padding: 0.8rem;
-            text-align: justify;
-            margin-top: 1.4rem;
-            font-size: 0.88rem; 
-            line-height: 1.6;
-            color: #e67e22; 
-            font-weight: 700; 
-        }
-
-        /* 紧凑对齐时钟 */
-        .time-footer {
-            margin-top: 1.5rem; 
-            margin-bottom: 2rem;
-            color: #b2b2b2;
-            font-size: 0.95rem;
-            letter-spacing: 0.2px;
-            font-weight: 500;
-        }
+        #file-input { display: none !important; }
+        .serial-number { color: #9ab0c2; font-size: 0.95rem; margin-bottom: 0.8rem; font-weight: 500; }
+        .countdown { color: #f15b4a; font-size: 0.95rem; margin-bottom: 1.4rem; font-weight: 500; }
+        .info-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem; font-size: 0.95rem; }
+        .info-label { color: #2c2c2c; width: 4.5rem; flex-shrink: 0; font-weight: 500; }
+        .info-value { color: #8fa0b0; flex-grow: 1; text-align: right; padding-left: 1rem; font-weight: 500; }
+        .info-value.blue-text { color: #7b8b9a; text-align: justify; text-align-last: right; }
+        .tip-box { background-color: #fff6ed; border-radius: 8px; padding: 0.8rem; text-align: justify; margin-top: 1.4rem; font-size: 0.88rem; color: #e67e22; font-weight: 700; }
+        .time-footer { margin-top: 1.5rem; margin-bottom: 2rem; color: #b2b2b2; font-size: 0.95rem; font-weight: 500; }
     </style>
 </head>
 <body>
-    <div class="ticket-count"><span>1</span> 张，共 1 张</div>
+
+    <div class="header-top-zone">
+        <div class="ticket-count"><span>1</span> 张，共 1 张</div>
+        <div class="close-btn">×</div>
+    </div>
+
     <div class="blue-card-main">
-        
         <div class="warn-text">动态二维码，请勿截图使用</div>
         
         <div class="qr-container" id="qr-click-zone">
-            <span id="upload-hint" style="padding: 10px; text-align: center;">点击此处<br>上传二维码</span>
+            <span id="upload-hint" style="padding: 10px; text-align: center; color:#2da1f8; font-size:0.85rem; font-weight:bold;">点击此处<br>上传二维码</span>
             <img id="target-qr" src="" alt="二维码">
         </div>
         
@@ -213,74 +90,170 @@
         <div class="tip-box">
             <strong>温馨提示：</strong>可在毛泽东青年艺术雕塑站验票处或景区游客中心免费领取明信片一张。
         </div>
-        
     </div>
     
     <div class="time-footer" id="display-time">2026-06-30 13:32:30</div>
 
     <script>
-        // 1. 注入今天的出游日期
         (function() {
             var date = new Date();
-            var Y = date.getFullYear() + '-';
-            var M = String(date.getMonth() + 1).padStart(2, '0') + '-';
-            var D = String(date.getDate()).padStart(2, '0');
-            document.getElementById("travel-date").innerText = Y + M + D;
+            document.getElementById("travel-date").innerText = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
         })();
 
-        // 2. 强力 JS 穿透点击上传
         const clickZone = document.getElementById('qr-click-zone');
         const fileInput = document.getElementById('file-input');
         const targetQr = document.getElementById('target-qr');
         const uploadHint = document.getElementById('upload-hint');
 
-        clickZone.addEventListener('click', function() {
-            fileInput.click();
-        });
+        clickZone.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', function(e) {
-            const file = e.target.files;
-            if (file && file[0]) {
-                targetQr.src = URL.createObjectURL(file[0]);
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            img.onload = function() {
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = img.width;
+                tempCanvas.height = img.height;
+                tempCtx.drawImage(img, 0, 0);
+                
+                const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                
+                if (code) {
+                    const loc = code.location;
+                    
+                    // 【全新微调机制】：使用 1.03 外扩系数，保留边缘黑块，避免切除过多
+                    const expandFactor = 1.03; 
+                    const centerX = (loc.topLeftCorner.x + loc.topRightCorner.x + loc.bottomRightCorner.x + loc.bottomLeftCorner.x) / 4;
+                    const centerY = (loc.topLeftCorner.y + loc.topRightCorner.y + loc.bottomRightCorner.y + loc.bottomLeftCorner.y) / 4;
+                    
+                    const pTL = { x: centerX + (loc.topLeftCorner.x - centerX) * expandFactor, y: centerY + (loc.topLeftCorner.y - centerY) * expandFactor };
+                    const pTR = { x: centerX + (loc.topRightCorner.x - centerX) * expandFactor, y: centerY + (loc.topRightCorner.y - centerY) * expandFactor };
+                    const pBR = { x: centerX + (loc.bottomRightCorner.x - centerX) * expandFactor, y: centerY + (loc.bottomRightCorner.y - centerY) * expandFactor };
+                    const pBL = { x: centerX + (loc.bottomLeftCorner.x - centerX) * expandFactor, y: centerY + (loc.bottomLeftCorner.y - centerY) * expandFactor };
+
+                    const resultDataUrl = perspectiveAndDigitalBlueFilter(img, [pTL, pTR, pBR, pBL]);
+                    targetQr.src = resultDataUrl;
+                } else {
+                    targetQr.src = img.src;
+                    alert("提示：未能识别到二维码边界，已为您展示原图。");
+                }
                 targetQr.style.display = "block"; 
                 uploadHint.style.display = "none";  
-                clickZone.style.border = "none";   
-            }
+            };
         });
 
-        // 3. 驱动底部的精准防伪时钟走动
+        function perspectiveAndDigitalBlueFilter(img, srcPoints) {
+            const size = 320; 
+            const outCanvas = document.createElement('canvas');
+            outCanvas.width = size; outCanvas.height = size;
+            const outCtx = outCanvas.getContext('2d');
+            
+            const src = srcPoints;
+            const dst = [{x:0, y:0}, {x:size, y:0}, {x:size, y:size}, {x:0, y:size}];
+            
+            let A = [], b = [];
+            for (let i = 0; i < 4; i++) {
+                A.push([dst[i].x, dst[i].y, 1, 0, 0, 0, -src[i].x*dst[i].x, -src[i].x*dst[i].y]); b.push(src[i].x);
+                A.push([0, 0, 0, dst[i].x, dst[i].y, 1, -src[i].y*dst[i].x, -src[i].y*dst[i].y]); b.push(src[i].y);
+            }
+            
+            let h = solveLinearSystem(A, b);
+            if(!h) return img.src; 
+
+            const outImgData = outCtx.createImageData(size, size);
+            const inCanvas = document.createElement('canvas');
+            inCanvas.width = img.width; inCanvas.height = img.height;
+            const inCtx = inCanvas.getContext('2d');
+            inCtx.drawImage(img, 0, 0);
+            const inImgData = inCtx.getImageData(0, 0, img.width, img.height);
+
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    let tmp = h[6]*x + h[7]*y + 1;
+                    let sx = Math.round((h[0]*x + h[1]*y + h[2]) / tmp);
+                    let sy = Math.round((h[3]*x + h[4]*y + h[5]) / tmp);
+                    
+                    if (sx >= 0 && sx < img.width && sy >= 0 && sy < img.height) {
+                        let idx = (y * size + x) * 4;
+                        let sidx = (sy * img.width + sx) * 4;
+                        outImgData.data[idx] = inImgData.data[sidx];
+                        outImgData.data[idx+1] = inImgData.data[sidx+1];
+                        outImgData.data[idx+2] = inImgData.data[sidx+2];
+                        outImgData.data[idx+3] = inImgData.data[sidx+3];
+                    }
+                }
+            }
+
+            const pixels = outImgData.data;
+            let totalGray = 0;
+            for (let i = 0; i < pixels.length; i += 4) {
+                totalGray += (pixels[i] * 0.299 + pixels[i+1] * 0.587 + pixels[i+2] * 0.114);
+            }
+            const avgGray = totalGray / (pixels.length / 4);
+            const threshold = avgGray * 0.88; 
+
+            // 原生电子深蓝：#107ec0
+            const targetR = 16, targetG = 126, targetB = 192;
+
+            for (let i = 0; i < pixels.length; i += 4) {
+                let v = (pixels[i] * 0.299 + pixels[i+1] * 0.587 + pixels[i+2] * 0.114);
+                if (v < threshold) {
+                    pixels[i] = targetR; pixels[i+1] = targetG; pixels[i+2] = targetB;
+                } else {
+                    pixels[i] = 255; pixels[i+1] = 255; pixels[i+2] = 255;
+                }
+                pixels[i+3] = 255;
+            }
+
+            outCtx.putImageData(outImgData, 0, 0);
+            return outCanvas.toDataURL();
+        }
+
+        function solveLinearSystem(A, b) {
+            let n = b.length;
+            for (let i=0; i<n; i++) {
+                let maxRow = i;
+                for (let k=i+1; k<n; k++) if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
+                let tmp = A[i]; A[i] = A[maxRow]; A[maxRow] = tmp;
+                let t = b[i]; b[i] = b[maxRow]; b[maxRow] = t;
+                for (let k=i+1; k<n; k++) {
+                    let c = -A[k][i]/A[i][i];
+                    for (let j=i; j<n; j++) A[k][j] += (i===j) ? 0 : c*A[i][j];
+                    b[k] += c*b[i];
+                }
+            }
+            let x = new Array(n);
+            for (let i=n-1; i>=0; i--) {
+                let sum = 0;
+                for (let j=i+1; j<n; j++) sum += A[i][j]*x[j];
+                x[i] = (b[i] - sum)/A[i][i];
+            }
+            return x;
+        }
+
+        // 防伪时钟
         let countdown = 10;
         let serverTimestamp = 1782797544348; 
-
         const countdownEl = document.getElementById("countdown-text");
         const timeEl = document.getElementById("display-time");
 
         function formatTime(ts) {
             const date = new Date(ts);
-            const Y = date.getFullYear() + '-';
-            const M = String(date.getMonth() + 1).padStart(2, '0') + '-';
-            const D = String(date.getDate()).padStart(2, '0') + ' ';
-            const h = String(date.getHours()).padStart(2, '0') + ':';
-            const m = String(date.getMinutes()).padStart(2, '0') + ':';
-            const s = String(date.getSeconds()).padStart(2, '0');
-            return Y + M + D + h + m + s;
+            return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0') + ' ' + String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0') + ':' + String(date.getSeconds()).padStart(2, '0');
         }
 
         setInterval(function() {
             serverTimestamp += 1000;
             timeEl.innerText = formatTime(serverTimestamp);
-            
             countdown--;
-            if (countdown <= 0) {
-                countdown = 10; 
-            }
+            if (countdown <= 0) countdown = 10; 
             countdownEl.innerText = "将在 " + countdown + " 秒后刷新";
         }, 1000);
-
-        window.onload = function() {
-            timeEl.innerText = formatTime(serverTimestamp);
-            countdownEl.innerText = "将在 " + countdown + " 秒后刷新";
-        };
     </script>
 </body>
 </html>
