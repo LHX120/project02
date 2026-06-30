@@ -13,11 +13,12 @@
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
         
-        /* 外部头部区域（严格移出蓝色块） */
+        /* 外部头部区域 */
         .header-top-zone {
-            width: 92vw; max-width: 380px; margin-top: 2rem; position: relative; text-align: center;
+            width: 92vw; max-width: 350px; margin-top: 2rem; position: relative; text-align: center;
         }
-        .ticket-count { color: #2c2c2c; font-size: 1.15rem; font-weight: 500; letter-spacing: 0.5px; }
+        /* 细节1：“1张 ，共1张” 字体缩小 */
+        .ticket-count { color: #2c2c2c; font-size: 0.95rem; font-weight: 500; letter-spacing: 0.5px; }
         .ticket-count span { color: #2da1f8; }
         .close-btn {
             position: absolute; right: 0px; top: 0px; width: 1.2rem; height: 1.2rem;
@@ -26,9 +27,10 @@
         }
 
         /* 中间大圆角淡蓝色色块主体 */
+        /* 细节2和3：加深背景色为 #d4ebfd，同时将最大宽度限制为 350px 并缩减内边距，使卡片整体小一圈 */
         .blue-card-main {
-            background-color: #eaf5fe; border-radius: 1.5rem; padding: 1.5rem 1.2rem;
-            margin-top: 0.8rem; width: 92vw; max-width: 380px;
+            background-color: #d4ebfd; border-radius: 1.5rem; padding: 1.2rem 1.0rem;
+            margin-top: 0.8rem; width: 92vw; max-width: 350px;
             box-shadow: 0 10px 35px rgba(45, 161, 248, 0.08); box-sizing: border-box; text-align: center;
         }
         .warn-text { color: #f09236; font-size: 0.88rem; margin-bottom: 0.9rem; font-weight: 500; }
@@ -44,12 +46,12 @@
             image-rendering: -webkit-optimize-contrast; display: none;
         }
         #file-input { display: none !important; }
-        .serial-number { color: #9ab0c2; font-size: 0.95rem; margin-bottom: 0.8rem; font-weight: 500; }
+        .serial-number { color: #8fa2b5; font-size: 0.95rem; margin-bottom: 0.8rem; font-weight: 500; }
         .countdown { color: #f15b4a; font-size: 0.95rem; margin-bottom: 1.4rem; font-weight: 500; }
         .info-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem; font-size: 0.95rem; }
         .info-label { color: #2c2c2c; width: 4.5rem; flex-shrink: 0; font-weight: 500; }
-        .info-value { color: #8fa0b0; flex-grow: 1; text-align: right; padding-left: 1rem; font-weight: 500; }
-        .info-value.blue-text { color: #7b8b9a; text-align: justify; text-align-last: right; }
+        .info-value { color: #768896; flex-grow: 1; text-align: right; padding-left: 1rem; font-weight: 500; }
+        .info-value.blue-text { color: #6a7987; text-align: justify; text-align-last: right; }
         .tip-box { background-color: #fff6ed; border-radius: 8px; padding: 0.8rem; text-align: justify; margin-top: 1.4rem; font-size: 0.88rem; color: #e67e22; font-weight: 700; }
         .time-footer { margin-top: 1.5rem; margin-bottom: 2rem; color: #b2b2b2; font-size: 0.95rem; font-weight: 500; }
     </style>
@@ -126,7 +128,6 @@
                 if (code) {
                     const loc = code.location;
                     
-                    // 【全新微调机制】：使用 1.03 外扩系数，保留边缘黑块，避免切除过多
                     const expandFactor = 1.03; 
                     const centerX = (loc.topLeftCorner.x + loc.topRightCorner.x + loc.bottomRightCorner.x + loc.bottomLeftCorner.x) / 4;
                     const centerY = (loc.topLeftCorner.y + loc.topRightCorner.y + loc.bottomRightCorner.y + loc.bottomLeftCorner.y) / 4;
@@ -197,7 +198,6 @@
             const avgGray = totalGray / (pixels.length / 4);
             const threshold = avgGray * 0.88; 
 
-            // 原生电子深蓝：#107ec0
             const targetR = 16, targetG = 126, targetB = 192;
 
             for (let i = 0; i < pixels.length; i += 4) {
