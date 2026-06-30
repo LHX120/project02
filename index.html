@@ -25,22 +25,18 @@
             min-height: 100vh;
         }
 
-        /* 中间大圆角卡片主体：精准匹配 280.png 晴空淡蓝色 */
-       /* 修改后的卡片主体：整体缩小一圈 */
-      .blue-card-main {
-          background-color: #dcedfa; 
-          border-radius: 1.5rem; 
-          padding: 1.5rem 1.2rem;
-          margin-top: 2.5rem;
-    
-         /* 核心修改：将宽度从 92vw 缩小到 86vw，最大宽度限制从 380px 缩小到 335px */
-         width: 86vw; 
-          max-width: 335px;
-    
-         box-shadow: 0 8px 30px rgba(45, 161, 248, 0.05); 
-       box-sizing: border-box;
-       text-align: center;
-       position: relative;
+        /* 中间大圆角卡片主体 */
+        .blue-card-main {
+            background-color: #dcedfa; 
+            border-radius: 1.5rem; 
+            padding: 1.5rem 1.2rem;
+            margin-top: 0.5rem; /* 减小间距，配合上方文字下移 */
+            width: 86vw; 
+            max-width: 335px;
+            box-shadow: 0 8px 30px rgba(45, 161, 248, 0.05); 
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
         }
 
         /* 右上角灰色关闭按钮 */
@@ -60,12 +56,13 @@
             cursor: pointer;
         }
         
-        /* 🎨 核心修改：缩小“1张，共1张”字号，取消加粗，高度对齐 280.png */
+        /* 调整位置：向下移动，紧贴卡片上边缘 */
         .ticket-count {
             color: #555555;
-            font-size: 0.88rem; /* 显著缩小字号，恢复精致感 */
-            font-weight: 400; /* 取消加粗，改回常规纤细字体 */
-            margin-bottom: 1.2rem;
+            font-size: 0.88rem; 
+            font-weight: 400; 
+            margin-top: 3.5rem; /* 增加顶部间距，实现整体下移 */
+            margin-bottom: 0px; /* 清空底部，紧贴下方卡片 */
             letter-spacing: 0.5px;
         }
         .ticket-count span { color: #2da1f8; }
@@ -188,16 +185,13 @@
     <div class="ticket-count"><span>1</span> 张，共 1 张</div>
     <div class="blue-card-main">
         
-        
         <div class="warn-text">动态二维码，请勿截图使用</div>
         
-        <!-- 二维码点击区 -->
         <div class="qr-container" id="qr-click-zone">
             <span id="upload-hint" style="padding: 10px; text-align: center;">点击此处<br>上传二维码</span>
             <img id="target-qr" src="" alt="二维码">
         </div>
         
-        <!-- 隔离隐藏的原生上传控件 -->
         <input type="file" id="file-input" accept="image/*">
         
         <div class="serial-number">22025020213013778543341</div>
