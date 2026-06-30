@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 针对 iPhone 手机屏幕的视口完美锁定 -->
+    <!-- 针对移动端物理视口的精准锁定 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>订单详情</title>
     <style>
@@ -11,10 +11,10 @@
             -webkit-text-size-adjust: 100%;
         }
 
-        /* 1. 【完美修复一】：最外层彻底改为纯白色底儿，绝不再有任何灰色 */
+        /* 1. 最外层：保持完美的纯白色底儿 */
         body { 
             margin: 0; 
-            background-color: #ffffff; /* 屏幕最外圈全部改回纯白框 */
+            background-color: #ffffff; 
             font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", sans-serif; 
             display: flex;
             flex-direction: column;
@@ -25,10 +25,10 @@
             min-height: 100vh;
         }
 
-        /* 2. 【完美修复二】：整个卡片主体就是一个【淡蓝色色块】，内容直接平铺在它上面 */
+        /* 2. 中间大圆角淡蓝色色块主体 */
         .blue-card-main {
-            background-color: #eaf5fe; /* 完美克隆原图中的柔和淡蓝色块底儿 */
-            border-radius: 28px; /* 大圆角边缘 */
+            background-color: #eaf5fe; 
+            border-radius: 28px; 
             padding: 24px 20px 24px 20px;
             margin-top: 50px;
             width: 90vw;
@@ -36,12 +36,10 @@
             box-sizing: border-box;
             text-align: center;
             position: relative;
-            
-            /* 配合纯白外框，加入极淡的、符合微信质感的边缘漫反射，让淡蓝色更高级 */
             box-shadow: 0 8px 30px rgba(45, 161, 248, 0.08); 
         }
 
-        /* 右上角灰色关闭按钮（定位在淡蓝色块右上角） */
+        /* 右上角灰色关闭按钮 */
         .blue-card-main::after {
             content: "×";
             position: absolute;
@@ -58,7 +56,7 @@
             cursor: pointer;
         }
         
-        /* 1张，共1张 文本 */
+        /* 数量文字 */
         .ticket-count {
             color: #333333;
             font-size: 1.1rem;
@@ -68,7 +66,7 @@
         }
         .ticket-count span { color: #2da1f8; }
 
-        /* 动态二维码提示 */
+        /* 动态二维码文字 */
         .warn-text {
             color: #f09236; 
             font-size: 0.85rem;
@@ -76,7 +74,7 @@
             font-weight: 400;
         }
 
-        /* 二维码容器（叠在淡蓝色底色上，自带一圈纯白背景保持主体突出） */
+        /* 二维码外层白色背景框 */
         .qr-container {
             display: flex;
             justify-content: center;
@@ -85,7 +83,7 @@
             width: 172px;
             height: 172px;
             cursor: pointer;
-            background-color: #ffffff; /* 保持二维码本身的白色衬底 */
+            background-color: #ffffff; 
             border-radius: 8px;
             border: 1px dashed #2da1f8; 
             box-sizing: border-box;
@@ -94,7 +92,7 @@
             font-weight: bold;
         }
 
-        /* 上传后的二维码图片自动裁剪 */
+        /* 上传后的图片自动裁剪 */
         .qr-container img {
             width: 100% !important;
             height: 100% !important;
@@ -111,14 +109,14 @@
 
         /* 序列号 */
         .serial-number {
-            color: #a4b4c4; /* 调校为原图中叠在蓝底上的浅灰蓝色 */
+            color: #a4b4c4; 
             font-size: 0.95rem;
             font-family: "Helvetica Neue", Arial, sans-serif;
             margin-bottom: 14px;
             letter-spacing: 0.3px;
         }
 
-        /* 倒计时刷新 */
+        /* 倒计时 */
         .countdown {
             color: #f15b4a; 
             font-size: 0.9rem;
@@ -126,7 +124,7 @@
             font-weight: 400;
         }
 
-        /* 订单明细整行 */
+        /* 明细条目 */
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -141,12 +139,11 @@
             width: 72px;
             flex-shrink: 0;
         }
-        /* 完美克隆长文本和明细内容在蓝底上的对齐表现 */
         .info-value {
-            color: #8fa0b0; /* 修正：使文字在淡蓝底色上显得柔和、不刺眼 */
+            color: #8fa0b0; 
             flex-grow: 1;
             text-align: right;
-            padding-left: 15px;
+            padding-left: 20px;
         }
         .info-value.blue-text {
             color: #7b8b9a; 
@@ -154,19 +151,26 @@
             text-align-last: right; 
         }
 
-        /* 温馨提示框 */
+        /* 5. 【像素级修正】：强化手机端的温馨提示整体加粗与色调深度 */
         .tip-box {
             background-color: #fff6ed; 
             border-radius: 8px;
             padding: 14px;
             text-align: justify;
             margin-top: 24px;
-            font-size: 0.88rem; /* 针对 iPhone 强制等比放大，字号非常清晰舒服 */
+            
+            /* 核心微调 */
+            font-size: 0.88rem; 
             line-height: 1.6;
-            color: #f09236; 
+            color: #e67e22; /* 调校：改成比之前更饱满、偏红的深橙色，完美对齐原图 */
+            font-weight: 600; /* 核心：对提示框内部【全部文字】强制进行真机高规格加粗 */
+        }
+        /* 确保前缀和后面的字粗细完全一致 */
+        .tip-box strong {
+            font-weight: 600;
         }
 
-        /* 底部防伪滚动时钟 */
+        /* 最底部防伪时钟 */
         .time-footer {
             margin-top: auto;
             margin-bottom: 30px;
@@ -179,19 +183,19 @@
 </head>
 <body>
 
-    <!-- 核心修改：整个内容区就是一个大淡蓝色块，切外围全部被 body 撑成纯白外框 -->
+    <!-- 整个大淡蓝色大卡片区域 -->
     <div class="blue-card-main">
         
         <div class="ticket-count"><span>1</span> 张，共 1 张</div>
         <div class="warn-text">动态二维码，请勿截图使用</div>
         
-        <!-- 点击此区域在手机/电脑端立即选择并上传图片 -->
+        <!-- 点击此区域立即在电脑/手机端上传图片 -->
         <div class="qr-container" id="qr-click-zone">
             <span id="upload-hint">点击此处上传二维码</span>
             <img id="target-qr" src="" alt="二维码">
         </div>
         
-        <!-- 表单隐形上传控件 -->
+        <!-- 隐形表单上传 -->
         <input type="file" id="file-input" accept="image/*">
         
         <div class="serial-number">22025020213013778543341</div>
@@ -211,14 +215,14 @@
             <div class="info-value">部分检票</div>
         </div>
 
-        <!-- 温馨提示框 -->
+        <!-- 经过加粗和颜色加深调校的提示框 -->
         <div class="tip-box">
             <strong>温馨提示：</strong>可在毛泽东青年艺术雕塑站验票处或景区游客中心免费领取明信片一张。
         </div>
         
     </div>
     
-    <!-- 4. 最底部防伪时钟 -->
+    <!-- 最底部防伪时钟 -->
     <div class="time-footer" id="display-time">2026-06-30 13:32:30</div>
 
     <script>
@@ -242,7 +246,7 @@
         });
 
         fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
+            const file = e.target.files;
             if (file) {
                 targetQr.src = URL.createObjectURL(file);
                 targetQr.style.display = "block"; 
