@@ -6,7 +6,6 @@
     <title>订单详情</title>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
-        /* 核心调整：全局基准字号从 20px 降至 16px，整体界面将等比例缩小一圈 */
         html { font-size: 16px; -webkit-text-size-adjust: 100%; }
         body { 
             margin: 0; background-color: #ffffff; 
@@ -16,7 +15,7 @@
         
         /* 外部头部区域 */
         .header-top-zone {
-            width: 88vw; max-width: 320px; margin-top: 2rem; position: relative; text-align: center;
+            width: 88vw; max-width: 320px; margin-top: 2.8rem; position: relative; text-align: center;
         }
         .ticket-count { color: #2c2c2c; font-size: 0.85rem; letter-spacing: 0.5px; }
         .ticket-count span { color: #2da1f8; }
@@ -26,17 +25,18 @@
             font-size: 0.9rem; line-height: 1.1rem; text-align: center; cursor: pointer;
         }
 
-        /* 蓝色背景卡片：宽度限制从 350px 缩紧至 320px */
+        /* 蓝色背景卡片：高度纵向拉长，上下 padding 从 1.2rem 大幅提升至 2.2rem */
         .blue-card-main {
-            background-color: #d4ebfd; border-radius: 1.2rem; padding: 1.2rem 1.0rem;
-            margin-top: 0.8rem; width: 88vw; max-width: 320px;
+            background-color: #d4ebfd; border-radius: 1.5rem; padding: 2.2rem 1.1rem;
+            margin-top: 1.2rem; width: 88vw; max-width: 320px;
             box-shadow: 0 10px 35px rgba(45, 161, 248, 0.08); box-sizing: border-box; text-align: center;
         }
-        .warn-text { color: #f09236; font-size: 0.8rem; margin-bottom: 0.9rem; }
+        /* 增加警告文字下方的纵向留白 */
+        .warn-text { color: #f09236; font-size: 0.8rem; margin-bottom: 1.6rem; }
         
-        /* 二维码容器：保持 145px */
+        /* 二维码容器：保持 145px，增加下方的间距 */
         .qr-container {
-            display: flex; justify-content: center; align-items: center; margin: 0 auto 0.9rem auto;
+            display: flex; justify-content: center; align-items: center; margin: 0 auto 1.6rem auto;
             width: 145px; height: 145px; cursor: pointer; background-color: #ffffff; 
             border-radius: 12px; box-sizing: border-box; overflow: hidden; position: relative;
         }
@@ -46,17 +46,22 @@
         }
         #file-input { display: none !important; }
         
-        .serial-number { color: #768896; font-size: 0.85rem; margin-bottom: 0.8rem; }
-        .countdown { color: #f15b4a; font-size: 0.85rem; margin-bottom: 1.4rem; }
-        .info-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem; font-size: 0.85rem; }
+        /* 增加序列号和倒计时的纵向高度 */
+        .serial-number { color: #768896; font-size: 0.85rem; margin-bottom: 1.2rem; }
+        .countdown { color: #f15b4a; font-size: 0.85rem; margin-bottom: 2.2rem; }
+        
+        /* 增加详情每行之间的纵向间距 */
+        .info-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.6rem; font-size: 0.85rem; }
         .info-label { color: #2c2c2c; width: 4.5rem; flex-shrink: 0; }
         .info-value { color: #768896; flex-grow: 1; text-align: right; padding-left: 1rem; }
         .info-value.blue-text { color: #6a7987; text-align: justify; text-align-last: right; }
         
-        .tip-box { background-color: #fff6ed; border-radius: 8px; padding: 0.8rem; text-align: justify; margin-top: 1.4rem; font-size: 0.8rem; color: #e67e22; line-height: 1.5; }
+        /* 温馨提示框：增加上外边距拉长间距 */
+        .tip-box { background-color: #fff6ed; border-radius: 8px; padding: 0.9rem; text-align: justify; margin-top: 2.2rem; font-size: 0.8rem; color: #e67e22; line-height: 1.5; }
         .tip-box strong { font-weight: 700; }
         
-        .time-footer { margin-top: 1.5rem; margin-bottom: 2rem; color: #b2b2b2; font-size: 0.85rem; }
+        /* 时钟底部留白拉长 */
+        .time-footer { margin-top: 2.5rem; margin-bottom: 3.5rem; color: #b2b2b2; font-size: 0.85rem; }
     </style>
 </head>
 <body>
