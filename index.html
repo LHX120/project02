@@ -6,7 +6,8 @@
     <title>订单详情</title>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
-        html { font-size: 20px; -webkit-text-size-adjust: 100%; }
+        /* 核心调整：全局基准字号从 20px 降至 16px，整体界面将等比例缩小一圈 */
+        html { font-size: 16px; -webkit-text-size-adjust: 100%; }
         body { 
             margin: 0; background-color: #ffffff; 
             font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; 
@@ -15,29 +16,28 @@
         
         /* 外部头部区域 */
         .header-top-zone {
-            width: 92vw; max-width: 350px; margin-top: 2rem; position: relative; text-align: center;
+            width: 88vw; max-width: 320px; margin-top: 2rem; position: relative; text-align: center;
         }
-        /* “1张 ，共1张” 字体细化缩小 */
-        .ticket-count { color: #2c2c2c; font-size: 0.85rem; font-weight: normal; letter-spacing: 0.5px; }
+        .ticket-count { color: #2c2c2c; font-size: 0.85rem; letter-spacing: 0.5px; }
         .ticket-count span { color: #2da1f8; }
         .close-btn {
-            position: absolute; right: 0px; top: -0.1rem; width: 1.2rem; height: 1.2rem;
+            position: absolute; right: 0px; top: 0px; width: 1.2rem; height: 1.2rem;
             background-color: rgba(0, 0, 0, 0.2); color: #fff; border-radius: 50%; 
             font-size: 0.9rem; line-height: 1.1rem; text-align: center; cursor: pointer;
         }
 
-        /* 中间圆角蓝色块主体 */
+        /* 蓝色背景卡片：宽度限制从 350px 缩紧至 320px */
         .blue-card-main {
-            background-color: #d4ebfd; border-radius: 1.5rem; padding: 1.2rem 1.2rem;
-            margin-top: 0.8rem; width: 92vw; max-width: 350px;
+            background-color: #d4ebfd; border-radius: 1.2rem; padding: 1.2rem 1.0rem;
+            margin-top: 0.8rem; width: 88vw; max-width: 320px;
             box-shadow: 0 10px 35px rgba(45, 161, 248, 0.08); box-sizing: border-box; text-align: center;
         }
-        .warn-text { color: #f09236; font-size: 0.8rem; margin-bottom: 0.8rem; font-weight: normal; }
+        .warn-text { color: #f09236; font-size: 0.8rem; margin-bottom: 0.9rem; }
         
-        /* 二维码外层白色背景框 —— 缩小两圈 */
+        /* 二维码容器：保持 145px */
         .qr-container {
-            display: flex; justify-content: center; align-items: center; margin: 0 auto 0.8rem auto;
-            width: 140px; height: 140px; cursor: pointer; background-color: #ffffff; 
+            display: flex; justify-content: center; align-items: center; margin: 0 auto 0.9rem auto;
+            width: 145px; height: 145px; cursor: pointer; background-color: #ffffff; 
             border-radius: 12px; box-sizing: border-box; overflow: hidden; position: relative;
         }
         .qr-container img {
@@ -46,18 +46,17 @@
         }
         #file-input { display: none !important; }
         
-        /* 字体细化与缩小调优 */
-        .serial-number { color: #8fa2b5; font-size: 0.8rem; margin-bottom: 0.6rem; font-weight: normal; }
-        .countdown { color: #f15b4a; font-size: 0.85rem; margin-bottom: 1.2rem; font-weight: normal; }
-        .info-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.9rem; font-size: 0.85rem; }
-        .info-label { color: #2c2c2c; width: 4.5rem; flex-shrink: 0; font-weight: normal; }
-        .info-value { color: #768896; flex-grow: 1; text-align: right; padding-left: 1rem; font-weight: normal; }
+        .serial-number { color: #768896; font-size: 0.85rem; margin-bottom: 0.8rem; }
+        .countdown { color: #f15b4a; font-size: 0.85rem; margin-bottom: 1.4rem; }
+        .info-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem; font-size: 0.85rem; }
+        .info-label { color: #2c2c2c; width: 4.5rem; flex-shrink: 0; }
+        .info-value { color: #768896; flex-grow: 1; text-align: right; padding-left: 1rem; }
         .info-value.blue-text { color: #6a7987; text-align: justify; text-align-last: right; }
         
-        /* 仅温馨提示加粗 */
-        .tip-box { background-color: #fff6ed; border-radius: 8px; padding: 0.8rem; text-align: justify; margin-top: 1.2rem; font-size: 0.8rem; color: #e67e22; }
+        .tip-box { background-color: #fff6ed; border-radius: 8px; padding: 0.8rem; text-align: justify; margin-top: 1.4rem; font-size: 0.8rem; color: #e67e22; line-height: 1.5; }
         .tip-box strong { font-weight: 700; }
-        .time-footer { margin-top: 1.5rem; margin-bottom: 2rem; color: #b2b2b2; font-size: 0.85rem; font-weight: normal; }
+        
+        .time-footer { margin-top: 1.5rem; margin-bottom: 2rem; color: #b2b2b2; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -239,7 +238,6 @@
             return x;
         }
 
-        // 防伪时钟
         let countdown = 10;
         let serverTimestamp = 1782797544348; 
         const countdownEl = document.getElementById("countdown-text");
