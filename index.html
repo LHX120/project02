@@ -2,14 +2,21 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 核心适配：强制禁止手机端双击缩放，并锁定标准移动端物理视口 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>订单详情</title>
     <style>
-        /* 1. 最底层：大灰白色/冷灰色底儿 */
+        /* 1. 移动端移动视口根级比例初始化（针对手机高分屏防发虚） */
+        html {
+            font-size: 16px; /* 声明手机基准逻辑像素 */
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* 微信冷灰色倾向的背景底色 */
         body { 
             margin: 0; 
-            background-color: #f4f6fa; /* 完美克隆参考图外圈大灰白底 */
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", sans-serif; 
+            background-color: #f1f6fa; 
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -19,203 +26,190 @@
             min-height: 100vh;
         }
 
-        /* 2. 中间层：叠在大灰白底儿上面、承托白卡片的【淡蓝色固定色块儿】 */
-        .page-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            padding-top: 40px;
+        /* 2. 中间包装层：使用 vw（视口宽度）控制，确保在所有尺寸的 iPhone 上四周间距完全一致 */
+        .blue-card-bg {
+            background-color: #e6f3fd; 
+            border-radius: 28px;
+            padding: 3.2vw; /* 随手机屏幕宽度完美自动伸缩的一圈蓝色底边缘 */
+            margin-top: 8vh; /* 根据手机高度动态调节居中位置 */
+            width: 90vw; /* 占据手机屏幕宽度的 90%，两侧留空刚好 */
+            max-width: 360px;
             box-sizing: border-box;
-        }
-        
-        /* 独立出来的淡蓝色块层：不仅有柔和扩散，更保证绝对不干扰上层点击事件 */
-        .blue-backdrop-block {
-            position: absolute;
-            top: 25px;
-            width: 88%;
-            max-width: 355px;
-            height: 610px; /* 精准契合白色卡片高度的淡蓝色容器 */
-            background: #eef7fe; /* 完美的浅蓝色块儿打底 */
-            border-radius: 32px;
-            pointer-events: none; /* 核心修正：允许点击穿透，彻底解决不能添加图片的问题 */
-            box-shadow: 0 10px 40px rgba(45, 161, 248, 0.18); /* 让淡蓝色块儿带有向外晕染的边缘质感 */
-            z-index: 1;
+            box-shadow: 0 12px 35px rgba(45, 161, 248, 0.16); 
         }
 
-        /* 3. 最顶层：纯白票据卡片 */
+        /* 3. 最上层：纯白色卡片主体 */
         .card {
             background: #ffffff;
-            border-radius: 24px; 
-            padding: 28px 24px 24px 24px;
-            width: 84%;
-            max-width: 345px;
+            border-radius: 20px; 
+            padding: 6vw 5vw; /* 手机端内部舒适的呼吸感留白 */
+            width: 100%;
             text-align: center;
-            position: relative;
-            z-index: 10; /* 极高层级，确保在最上层被完美看到和操作 */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01); 
             box-sizing: border-box;
+            position: relative;
         }
 
-        /* 右上角灰色关闭按钮 */
+        /* 右上角灰色关闭叉号按钮（在 iPhone 上精准等比放大至易触达大小） */
         .card::after {
             content: "×";
             position: absolute;
-            top: -35px;
-            right: -10px;
-            width: 22px;
-            height: 22px;
+            top: -48px;
+            right: -2px;
+            width: 24px;
+            height: 24px;
             background-color: rgba(0, 0, 0, 0.2);
             color: #fff;
             border-radius: 50%;
-            font-size: 16px;
-            line-height: 20px;
+            font-size: 18px;
+            line-height: 22px;
             text-align: center;
             cursor: pointer;
         }
         
+        /* 1张，共1张 数量文字：在手机上加强辨识度 */
         .ticket-count {
-            color: #333333;
-            font-size: 17px;
-            font-weight: 500;
-            margin-bottom: 24px;
-            letter-spacing: 1px;
+            color: #2b2b2b;
+            font-size: 1.1rem; /* 17.6px 舒适字号 */
+            font-weight: 600;
+            margin-bottom: 5.5vw;
+            letter-spacing: 0.5px;
         }
         .ticket-count span { color: #2da1f8; }
 
         .warn-text {
             color: #f09236; 
-            font-size: 13px;
-            margin-bottom: 16px;
-            font-weight: 400;
+            font-size: 0.85rem; /* 13.6px */
+            margin-bottom: 4vw;
+            font-weight: 500;
         }
 
-        /* 二维码点击区 */
+        /* 二维码外层固定大小容器（严格对齐微信小程序真机渲染物理比例） */
         .qr-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 16px auto;
-            width: 170px;
-            height: 170px;
+            margin: 0 auto 4.5vw auto;
+            width: 172px;
+            height: 172px;
             cursor: pointer;
-            position: relative;
-            overflow: hidden; 
             background-color: #fafafa;
-            border-radius: 6px;
-            z-index: 20; /* 确保二维码可点击优先级最高 */
+            border-radius: 8px;
+            border: 1px dashed #2da1f8; 
+            box-sizing: border-box;
+            color: #2da1f8;
+            font-size: 0.9rem;
+            font-weight: bold;
         }
 
-        /* 上传后的图片无损等比裁切 */
+        /* 上传后的图片无损等比裁切（解决手机端发虚问题） */
         .qr-container img {
-            width: 170px !important;
-            height: 170px !important;
+            width: 100% !important;
+            height: 100% !important;
             object-fit: cover; 
             object-position: center; 
             image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            box-sizing: border-box;
+            display: none; 
         }
 
         /* 隐藏的原生上传输入框 */
         #file-input {
-            display: none;
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
 
         .serial-number {
-            color: #b2b2b2; 
-            font-size: 15px;
+            color: #b5b5b5; 
+            font-size: 0.95rem; /* 15.2px 数字条码清晰可辨 */
             font-family: "Helvetica Neue", Arial, sans-serif;
-            margin-bottom: 14px;
-            letter-spacing: 0.5px;
+            margin-bottom: 4vw;
+            letter-spacing: 0.3px;
         }
 
         .countdown {
             color: #f15b4a; 
-            font-size: 14px;
-            margin-bottom: 28px;
-            font-weight: 400;
+            font-size: 0.9rem; /* 14.4px */
+            margin-bottom: 6vw;
+            font-weight: 500;
         }
 
-        /* 订单明细条目 */
+        /* 4. 手机明细核心排版：解决左右文字挤压与对齐错位 */
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 18px;
-            font-size: 14px;
+            margin-bottom: 4.5vw; /* 手机端各行之间舒适的空气感间距 */
+            font-size: 0.9rem; /* 14.4px 标准移动端正文字体 */
             line-height: 1.5;
             text-align: left;
         }
         .info-label {
-            color: #333333;
-            width: 75px;
+            color: #2b2b2b;
+            width: 72px;
             flex-shrink: 0;
+            font-weight: 400;
         }
         .info-value {
-            color: #969696; 
+            color: #929292; 
             flex-grow: 1;
             text-align: right;
-            padding-left: 20px;
+            padding-left: 15px;
         }
+        /* 特殊处理多行商品名称在 iPhone 上的左右完美两端对齐 */
         .info-value.blue-text {
             color: #7b8b9a; 
-            font-size: 14px;
             text-align: justify; 
             text-align-last: right; 
+            font-weight: 400;
         }
 
-        /* 提示框 */
+        /* 5. 提示框精细化移动端适配：强制加大字号，杜绝瞎眼小字 */
         .tip-box {
             background-color: #fff6ed; 
-            border-radius: 6px;
-            padding: 12px 14px;
+            border-radius: 8px;
+            padding: 3.5vw 4vw; /* 加大内边距，提升小屏幕手机的可读性 */
             text-align: justify;
-            margin-top: 24px;
-            font-size: 13px;
+            margin-top: 5.5vw;
+            font-size: 0.85rem; /* 调大至 13.6px，在手机上看字号十分完美舒适 */
             line-height: 1.6;
             color: #f09236; 
         }
 
-        /* 4. 底部防伪时钟 */
+        /* 6. 底部防伪时钟手机专属字号调校 */
         .time-footer {
-            margin-top: 40px;
-            margin-bottom: 30px;
+            margin-top: auto;
+            margin-bottom: 6vw;
+            padding-top: 8vw;
             color: #b2b2b2;
-            font-size: 14px;
+            font-size: 0.88rem; /* 14px */
             letter-spacing: 0.2px;
             font-weight: 400;
-            position: relative;
-            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-    <!-- 统一外层包装容器 -->
-    <div class="page-container">
+    <!-- 外部淡蓝色包装层 -->
+    <div class="blue-card-bg">
         
-        <!-- 【核心细节还原】：叠在大灰白底儿上的淡蓝色色块儿 -->
-        <div class="blue-backdrop-block"></div>
-
         <!-- 最上层的白卡片主体 -->
         <div class="card">
             <div class="ticket-count"><span>1</span> 张，共 1 张</div>
             <div class="warn-text">动态二维码，请勿截图使用</div>
             
-            <!-- 点击此区域立即上传图片 -->
+            <!-- 点击此区域立即在手机端唤醒相册并完成自动完美裁剪 -->
             <div class="qr-container" id="qr-click-zone">
-                <img id="target-qr" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='170' height='170' viewBox='0 0 170 170'><rect width='170' height='170' fill='%23fafafa'/><text x='50%' y='46%' font-size='14' fill='%232da1f8' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'>点击此处上传</text><text x='50%' y='58%' font-size='12' fill='%23a2d2f9' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'>自动居中裁切</text></svg>" alt="二维码">
+                <span id="upload-hint">点击此处上传二维码</span>
+                <img id="target-qr" src="" alt="二维码">
             </div>
             
-            <!-- 隐藏的隐藏上传表单 -->
+            <!-- 深度隐藏的手机端表单组件 -->
             <input type="file" id="file-input" accept="image/*">
             
             <div class="serial-number">22025020213013778543341</div>
             <div class="countdown" id="countdown-text">将在 10 秒后刷新</div>
 
-            <!-- 详情列表 -->
+            <!-- 详情明细列表 -->
             <div class="info-row">
                 <div class="info-label">产品名称</div>
                 <div class="info-value blue-text">环全洲游览线（可直达毛泽东青年艺术雕塑站，含往返）</div>
@@ -226,10 +220,10 @@
             </div>
             <div class="info-row">
                 <div class="info-label">检票状态</div>
-                <div class="info-value">部分检票</div>
+                <div class="info-value" style="color: #929292;">部分检票</div>
             </div>
 
-            <!-- 温馨提示 -->
+            <!-- 温馨提示框：字号在移动端已全量做等比视觉膨胀 -->
             <div class="tip-box">
                 <strong>温馨提示：</strong>可在毛泽东青年艺术雕塑站验票处或景区游客中心免费领取明信片一张。
             </div>
@@ -237,7 +231,7 @@
         
     </div>
     
-    <!-- 底部防伪时间 -->
+    <!-- 4. 底部防伪滚动时间 -->
     <div class="time-footer" id="display-time">2026-06-30 13:32:30</div>
 
     <script>
@@ -250,24 +244,27 @@
             document.getElementById("travel-date").innerText = Y + M + D;
         })();
 
-        // 2. 点击上传逻辑（已通过层级隔离与 pointer-events 彻底修复，百分百正常响应）
+        // 2. 手机真机丝滑调起相册/相机并自动居中裁剪
         const clickZone = document.getElementById('qr-click-zone');
         const fileInput = document.getElementById('file-input');
         const targetQr = document.getElementById('target-qr');
+        const uploadHint = document.getElementById('upload-hint');
 
-        clickZone.addEventListener('click', function(e) {
-            e.stopPropagation(); // 阻止冒泡
+        clickZone.addEventListener('click', function() {
             fileInput.click();
         });
 
         fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0]; // 获取单个选中的图片文件
+            const file = e.target.files[0]; // 获取手机选中的第一张图片
             if (file) {
-                targetQr.src = URL.createObjectURL(file); // 将图片流转为临时虚拟链接
+                targetQr.src = URL.createObjectURL(file);
+                targetQr.style.display = "block"; 
+                uploadHint.style.display = "none"; 
+                clickZone.style.border = "none";  
             }
         });
 
-        // 3. 控制最底部的防伪时钟走动与周期计数器
+        // 3. 驱动底部的防伪时钟与倒计时
         let countdown = 10;
         let serverTimestamp = 1782797544348; 
 
